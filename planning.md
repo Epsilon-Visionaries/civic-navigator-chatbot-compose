@@ -1,41 +1,4 @@
-# CivicNavigator Chatbot Implementation Plan - Requirements-Driven
-
-## 📋 Technical Requirements Checklist (MUST DELIVER)
-
-### ✅ Functional Requirements
-- [ ] **Chatbot Q&A**: Multi-turn conversation with citations, clarifying questions, graceful out-of-scope handling
-- [ ] **Incident Reporting**: Title, description, category, location, contact, optional photo, returns reference ID
-- [ ] **Status Lookup**: Input reference ID → status, last update, brief history
-- [ ] **Staff Tools**: List/filter incidents, detail view, update status/notes, basic audit log
-- [ ] **KB Management**: Store articles (title, body, tags, source/URL), ingest/update, reindex, version metadata
-- [ ] **Notifications**: On incident creation and status change
-
-### ✅ Non-Functional Requirements  
-- [ ] **Performance**: Ask→Answer P50 ≤ 1.5s, P95 ≤ 3.5s
-- [ ] **Reliability**: Health/readiness checks, graceful AI degradation
-- [ ] **Security**: Protect staff actions, mask PII in logs, conversation deletion
-- [ ] **Accessibility**: Keyboard navigation, labels, contrast checks
-- [ ] **Observability**: Structured logs with request/trace IDs, volume/latency/error metrics
-- [ ] **i18n**: English responses + basic Swahili greetings recognition
-
-### ✅ AI Requirements (CRITICAL)
-- [ ] **Grounded Answers**: Retrieval from KB with mandatory citations
-- [ ] **Fine-tuned Component**: Lightweight fine-tuned model in the loop (intent/ranking/generation)
-- [ ] **Quality**: ≥70% correctness on 50-100 query test set with correct citations
-- [ ] **Safety**: Refuse unsafe requests, indicate uncertainty, never fabricate citations
-- [ ] **Health Signal**: AI readiness/health endpoint
-- [ ] **Deliverables**: Model weights/adapters, training/eval logs, Model Card
-
-### ✅ Deployment Requirements
-- [ ] **Local Setup**: Single command to start all components
-- [ ] **Configuration**: .env.example with required variables
-- [ ] **Health Checks**: Service readiness endpoints + 2-3 step smoke test
-- [ ] **Data**: Seed dataset + KB bundle (80-200 docs) with ingest instructions
-
-### ✅ Quality Evidence
-- [ ] **Testing**: Unit, integration, E2E, accessibility, performance, security checks
-- [ ] **Collaboration**: Issues↔PR links, reviews, project board, ADRs, release notes
-- [ ] **Demo**: ≤10-minute video showing all functionality
+# CivicNavigator Chatbot Implementation Plan
 
 ## Project Overview
 This plan outlines a step-by-step implementation approach for the CivicNavigator Chatbot MVP with a two-person team (Next.js frontend developer and Django backend developer). The timeline is structured as a one-week sprint to deliver all required functionality.
@@ -48,333 +11,157 @@ This plan outlines a step-by-step implementation approach for the CivicNavigator
 
 ## Day-by-Day Implementation Plan
 
-### Day 1: Project Setup & Core Architecture (Requirements Foundation)
+### Day 1: Project Setup & Core Architecture
 **Frontend Developer:**
-- Set up Next.js project with TypeScript + accessibility setup (axe-core)
-- Create project structure with proper routing for 3 core journeys
-- Implement basic UI components (Chat, IncidentForm, StatusLookup, StaffDashboard)
-- Set up state management: React Query for server state + Zustand for client state
-- Create authentication context with role-based access (resident/staff)
-- **Requirement Check**: ✅ Accessibility foundation, ✅ Role-based access structure
+- Set up Next.js project with TypeScript
+- Create project structure and routing
+- Implement basic UI components and layout
+- Set up state management (React Context and React Query(must) and  Zustand)
+- Create authentication context structure
 
 **Backend Developer:**
-- Set up Django project with DRF + proper logging configuration (structured JSON)
-- Configure database with proper indexing for performance requirements
-- Create core models: User, Incident, Conversation, Message, KBDocument with audit fields
-- Implement JWT authentication with role-based permissions
-- Set up health check endpoints (/api/health/, /api/ai/health/)
-- **Requirement Check**: ✅ Observability structure, ✅ Health checks, ✅ Security foundation
+- Set up Django project with Django REST Framework
+- Configure database (SQLite for dev, PostgreSQL for production)
+- Create core modules: User, Incident, Conversation, Message, KBDocument, KBChunk
+- Implement basic authentication (JWT)
+- Set up initial API endpoints
 
 **Together:**
-- Define API contracts that meet interface requirements (specific response formats)
-- Set up GitHub repository with proper issue/PR templates and project board
-- Establish coding standards and create .env.example template
-- Plan AI integration approach to meet fine-tuning requirement
+- Define API contracts between frontend and backend
+- Set up GitHub repository with branching strategy
+- Create project board with tasks (jira/github project management tool to be discussed)
+- Establish coding standards and communication plan
 
-### Day 2: Core Chat Functionality + AI Foundation (Multi-turn + Citations)
+### Day 2: Core Chat Functionality
 **Frontend Developer:**
-- Implement chat interface with multi-turn conversation support
-- Create citation display component with proper source links
-- Add confidence indicators and clarifying question UI flows
-- Implement typing indicators and loading states with accessibility
-- Create conversation state management with React Query
-- **Requirement Check**: ✅ Multi-turn chat, ✅ Citations display, ✅ Clarifying questions UI
+- Implement chat interface component
+- Create message input and display components
+- Add conversation state management
+- Implement typing indicators and loading states
+- Create citation display component
 
 **Backend Developer:**
-- Create chat API endpoint with required response format (reply, citations, confidence)
-- Set up basic RAG pipeline: document chunking + embedding generation
-- Implement lightweight fine-tuned model (DistilBERT for intent classification)
-- Create confidence scoring system based on retrieval scores
-- Implement basic Swahili keyword recognition ("habari", "asante", etc.)
-- **Requirement Check**: ✅ Fine-tuned component, ✅ Citations with metadata, ✅ Basic i18n
+- Create API endpoints for chat functionality
+- Implement basic message handling
+- Set up conversation flow logic
+- Create serializers for messages with citations
+- Implement basic confidence scoring system
 
 **Together:**
-- Integrate chat frontend with backend API
-- Test multi-turn conversation flows and citation accuracy
-- Set up initial KB with 20-30 sample documents for testing
+- Integrate frontend chat with backend API
+- Test basic conversation flow
+- Plan AI integration approach
 
-### Day 3: Incident Reporting + Status Lookup (Complete User Journeys)
+### Day 3: Incident Reporting & Status Lookup
 **Frontend Developer:**
-- Create incident reporting form with all required fields (title, description, category, location, contact)
-- Implement optional photo upload functionality
-- Add form validation and error handling with accessibility
-- Create status lookup component with reference ID input
-- Implement incident status display with history timeline
-- Add keyboard navigation support across all forms
-- **Requirement Check**: ✅ Complete incident form, ✅ Status lookup, ✅ Accessibility
+- Create incident reporting form component
+- Implement form validation
+- Add optional photo upload functionality
+- Create status lookup component
+- Implement incident status display
+- Add navigation between features
 
 **Backend Developer:**
-- Create incident creation API with proper response format (incident_id, status:"NEW")
-- Implement incident status lookup API with history
-- Set up incident workflow (NEW → IN_PROGRESS → RESOLVED)
-- Create notification system (email notifications on creation/status change)
-- Add basic audit logging for incident changes
-- Implement PII masking in logs
-- **Requirement Check**: ✅ Incident APIs, ✅ Notifications, ✅ Audit logging, ✅ PII protection
+- Create API endpoints for incident management
+- Implement incident status workflow
+- Create incident serializer and validation
+- Set up notification system for incidents
+- Implement basic audit logging
 
 **Together:**
-- Integrate incident forms with backend APIs
-- Test complete incident reporting and status lookup flows
-- Implement error handling and user feedback for all scenarios
+- Integrate frontend forms with backend APIs
+- Test incident reporting and status lookup flows
+- Implement error handling and user feedback
 
-### Day 4: AI Enhancement + Staff Tools (Fine-tuning + Management)
+### Day 4: AI Integration & Knowledge Base
 **Frontend Developer:**
-- Create staff interface for incident list with filtering capabilities
-- Implement incident detail view and status update functionality
-- Add KB management interface (create/edit/delete articles)
-- Implement role-based access control throughout the application
-- Add conversation deletion feature for privacy compliance
-- **Requirement Check**: ✅ Staff tools, ✅ KB management, ✅ Privacy controls
+- Enhance chat UI for AI responses with citations
+- Add confidence indicators
+- Implement clarification question flow
+- Create staff interface for KB management
+- Add components for viewing/editing KB articles
 
 **Backend Developer:**
-- Complete fine-tuning of lightweight model with 200-300 training examples
-- Enhance RAG system with proper document ranking and retrieval
-- Create KB management API endpoints (CRUD operations + reindex)
-- Implement staff API endpoints with proper permissions
-- Add graceful AI degradation (fallback to keyword search when AI fails)
-- Set up AI health monitoring and readiness signals
-- **Requirement Check**: ✅ Fine-tuned model training, ✅ KB management, ✅ AI reliability
+- Set up RAG system (document ingestion, chunking, vector storage)
+- Implement lightweight fine-tuned model for intent/ranking
+- Create KB management API endpoints
+- Integrate AI components with chat endpoint
+- Implement health checks for AI services
 
 **Together:**
-- Integrate AI enhancements with chat system
-- Test staff workflows and KB management
-- Verify AI graceful degradation scenarios
+- Test AI integration with sample queries
+- Evaluate response quality and citation accuracy
+- Test KB management functionality
+- Plan AI evaluation approach
 
-### Day 5: Performance Optimization + Safety (Meeting Performance Targets)
+### Day 5: Staff Tools & Final Integration
 **Frontend Developer:**
-- Optimize components for performance (React.memo, useMemo, useCallback)
-- Implement proper error boundaries and loading states
-- Add comprehensive accessibility testing with axe-core
-- Optimize bundle size and implement code splitting
-- Add request/response timing measurements
-- **Requirement Check**: ✅ Performance optimization, ✅ Accessibility compliance
+- Complete staff interface (incident list, detail view)
+- Implement status update functionality
+- Add audit log display
+- Implement role-based access control
+- Polish UI/UX and add accessibility features
 
 **Backend Developer:**
-- Implement performance optimizations (database query optimization, caching)
-- Add safety filters (toxicity detection, unsafe request handling)
-- Implement proper error handling with stable error codes
-- Set up request/trace ID logging throughout the system
-- Optimize AI pipeline for P50 ≤ 1.5s, P95 ≤ 3.5s targets
-- Add comprehensive metrics collection (volume, latency, errors)
-- **Requirement Check**: ✅ Performance targets, ✅ Safety filters, ✅ Observability
+- Complete staff API endpoints
+- Implement role-based permissions
+- Set up notification delivery system
+- Optimize database queries
+- Add comprehensive logging
 
 **Together:**
-- Conduct end-to-end performance testing
-- Verify all response formats match interface contracts
-- Test safety scenarios and graceful error handling
+- Integrate staff tools with backend APIs
+- Test complete resident and staff workflows
+- Conduct security review
+- Prepare initial dataset for KB
 
-### Day 6: Testing & AI Evaluation (Quality Evidence)
+### Day 6: Testing & Quality Assurance
 **Frontend Developer:**
-- Write comprehensive unit tests for all components (aim for 80%+ coverage)
-- Implement E2E tests for all 3 user journeys using Cypress/Playwright
-- Conduct accessibility audit and fix any issues
-- Test responsive design across devices
-- Create test documentation and automation scripts
-- **Requirement Check**: ✅ Unit tests, ✅ E2E tests, ✅ Accessibility tests
+- Write unit tests for components
+- Implement E2E tests for user journeys
+- Conduct accessibility audit
+- Test responsive design
+- Fix UI bugs and polish experience
 
 **Backend Developer:**
-- Write unit and integration tests for all API endpoints
-- Implement AI evaluation framework with 50-100 query test dataset
-- Conduct security testing (basic penetration testing, input validation)
-- Performance test all endpoints against requirements
-- Create AI evaluation metrics (correctness, citation accuracy, latency)
-- Generate training/evaluation logs and model artifacts
-- **Requirement Check**: ✅ API tests, ✅ AI evaluation ≥70%, ✅ Security tests
+- Write unit and integration tests
+- Implement API tests
+- Conduct security testing
+- Performance test critical endpoints
+- Set up monitoring and logging
 
 **Together:**
-- Run complete test suite and fix any failing tests
-- Evaluate AI performance against quality requirements
-- Document test results and create quality evidence
-- Prepare for deployment testing
+- Run full test suite
+- Evaluate AI component with test dataset
+- Create test plan documentation
+- Fix critical bugs
+- Prepare deployment configuration
 
-### Day 7: Deployment & Documentation (Final Deliverables)
+### Day 7: Deployment, Documentation & Demo
 **Frontend Developer:**
-- Create optimized production build with proper environment configuration
-- Set up single-command local deployment script
-- Create smoke test scripts for the 3 core journeys
-- Record demo video showing all functionality (≤10 minutes)
-- Write user documentation and deployment instructions
-- **Requirement Check**: ✅ Single-command deployment, ✅ Smoke tests, ✅ Demo video
+- Optimize build for production
+- Prepare deployment artifacts
+- Create demo script
+- Record demo video
+- Final UI polish
 
 **Backend Developer:**
-- Create deployment configuration with health checks
-- Prepare KB bundle with 80-200 documents and ingestion scripts
-- Generate final model artifacts (weights, adapters, training logs)
-- Create Model Card with performance metrics and limitations
-- Set up environment configuration template (.env.example)
-- Write technical documentation and API specifications
-- **Requirement Check**: ✅ KB bundle, ✅ Model artifacts, ✅ Model Card, ✅ Config template
+- Optimize for production
+- Prepare deployment artifacts
+- Create database migration scripts
+- Set up environment configuration
+- Write deployment documentation
 
 **Together:**
-- Deploy to local environment and run smoke tests
-- Verify all requirements are met with final checklist
-- Create release notes and tag final version
-- Prepare rollback procedures and troubleshooting guide
-- Final demo recording and project handoff documentation
+- Deploy to staging environment
+- Conduct smoke tests
+- Write release notes
+- Prepare final documentation
+- Record demo video
+- Tag final release
+- Prepare rollback plan
 
-## Technical Implementation Strategy (Requirements-Compliant)
-
-### AI Architecture (Meeting Fine-tuning Requirement)
-```
-User Query → Intent Classification (Fine-tuned DistilBERT) → Route Handler → RAG Pipeline → Response with Citations
-```
-
-**Fine-tuned Component**: DistilBERT fine-tuned for intent classification (question/incident/status)
-- **Training Data**: 200-300 synthetic examples per intent class
-- **Performance Target**: >90% intent classification accuracy
-- **Integration**: Routes queries to appropriate handlers (KB search, incident creation, status lookup)
-
-**RAG Pipeline**: 
-- **Embedding**: sentence-transformers/all-MiniLM-L6-v2 for document search
-- **Retrieval**: Top-k document chunks with TF-IDF + semantic similarity
-- **Citation**: Mandatory source attribution with document metadata
-- **Confidence**: Based on retrieval scores + intent confidence
-
-### Performance Architecture (Meeting P50/P95 Targets)
-```python
-# Caching strategy for performance
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
-        'OPTIONS': {'CLIENT_CLASS': 'django_redis.client.DefaultClient'},
-        'TIMEOUT': 300,  # 5 minutes for KB queries
-    }
-}
-
-# Database optimization
-class KBDocument(models.Model):
-    # ... fields ...
-    class Meta:
-        indexes = [
-            models.Index(fields=['tags']),  # For fast filtering
-            GinIndex(fields=['search_vector']),  # Full-text search
-        ]
-```
-
-### API Interface Compliance (Exact Response Formats)
-```python
-# Required response formats from original requirements
-def chat_response_format():
-    return {
-        "reply": "Answer text with citations [1], [2]",
-        "citations": [
-            {
-                "title": "Document Title",
-                "snippet": "Relevant excerpt...",
-                "source_link": "https://source.url"
-            }
-        ],
-        "confidence": 0.85,
-        "clarification_needed": False
-    }
-
-def incident_creation_format():
-    return {
-        "incident_id": "INC-2023-001",
-        "status": "NEW"
-    }
-
-def incident_status_format():
-    return {
-        "incident_id": "INC-2023-001", 
-        "status": "IN_PROGRESS",
-        "last_update": "2023-08-05T10:30:00Z",
-        "history": [
-            {"status": "NEW", "timestamp": "2023-08-04T09:00:00Z", "actor": "system"},
-            {"status": "IN_PROGRESS", "timestamp": "2023-08-05T10:30:00Z", "actor": "staff@city.gov"}
-        ]
-    }
-```
-
-### Security & Privacy Implementation
-```python
-# PII masking in logs
-import re
-def mask_pii(text):
-    # Email masking
-    text = re.sub(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', '***@***.***', text)
-    # Phone masking  
-    text = re.sub(r'\+?[\d\s-()]{8,}', '***-***-****', text)
-    return text
-
-# Role-based permissions
-from rest_framework.permissions import BasePermission
-class IsStaffOrReadOnly(BasePermission):
-    def has_permission(self, request, view):
-        if request.method in ['GET']:
-            return True
-        return request.user.is_staff
-```
-
-### Accessibility Implementation
-```typescript
-// Frontend accessibility requirements
-const ChatInterface = () => {
-  return (
-    <div role="main" aria-label="Civic Navigator Chat">
-      <div 
-        role="log" 
-        aria-live="polite" 
-        aria-label="Chat messages"
-        className="focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        {messages.map(message => (
-          <div 
-            key={message.id}
-            aria-label={`Message from ${message.sender}`}
-            tabIndex={0}
-          >
-            {message.text}
-          </div>
-        ))}
-      </div>
-      <form onSubmit={handleSubmit} aria-label="Send message">
-        <label htmlFor="message-input" className="sr-only">
-          Type your message
-        </label>
-        <input 
-          id="message-input"
-          type="text"
-          aria-describedby="message-help"
-          className="focus:ring-2 focus:ring-blue-500"
-        />
-      </form>
-    </div>
-  );
-};
-```
-
-### Observability Implementation
-```python
-# Structured logging with trace IDs
-import logging
-import uuid
-from django.utils.deprecation import MiddlewareMixin
-
-class RequestTracingMiddleware(MiddlewareMixin):
-    def process_request(self, request):
-        request.trace_id = str(uuid.uuid4())
-        
-logger = logging.getLogger(__name__)
-
-def log_with_trace(request, level, message, **kwargs):
-    logger.log(level, message, extra={
-        'trace_id': getattr(request, 'trace_id', 'unknown'),
-        'user_id': getattr(request.user, 'id', 'anonymous'),
-        'path': request.path,
-        **kwargs
-    })
-
-# Metrics collection
-from django.db import models
-class Metrics(models.Model):
-    endpoint = models.CharField(max_length=100)
-    response_time_ms = models.IntegerField()
-    status_code = models.IntegerField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-    trace_id = models.CharField(max_length=36)
-```
+## Technical Implementation Details
 
 ### Frontend (Next.js)
 - **Framework**: Next.js 14 with TypeScript
@@ -475,157 +262,21 @@ components/
 - **Performance**: Lighthouse for frontend, Django Silk for backend
 - **AI Evaluation**: Custom test dataset with 50-100 queries
 
-## Deployment Strategy (Meeting All Requirements)
+## Deployment Strategy
+- **Development**: Docker Compose for local development
+- **Production**: Vercel (frontend) + Render/Heroku (backend)
+- **Environment Variables**: Use .env files with .env.example as template
+- **Database**: PostgreSQL for production with proper migrations
+- **Monitoring**: Basic logging with structured logs and request IDs
 
-### Single-Command Local Setup
-```bash
-#!/bin/bash
-# start.sh - Single command to start all components
-
-# Check prerequisites
-python --version || { echo "Python 3.10+ required"; exit 1; }
-node --version || { echo "Node.js 18+ required"; exit 1; }
-
-# Setup backend
-cd backend
-python -m venv venv
-source venv/bin/activate  # venv\Scripts\activate on Windows
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py loaddata seed_data.json
-python manage.py ingest_kb data/kb_bundle/
-
-# Setup frontend  
-cd ../frontend
-npm install
-npm run build
-
-# Start services
-cd ../backend && python manage.py runserver &
-cd ../frontend && npm start &
-
-# Health checks
-sleep 10
-curl -f http://localhost:8000/api/health/ || { echo "Backend health check failed"; exit 1; }
-curl -f http://localhost:3000 || { echo "Frontend health check failed"; exit 1; }
-
-echo "✅ All services started successfully"
-echo "🌐 Frontend: http://localhost:3000"
-echo "🔧 Backend API: http://localhost:8000/api/"
-echo "📊 Health: http://localhost:8000/api/health/"
-```
-
-### Environment Configuration (.env.example)
-```bash
-# Required variables
-SECRET_KEY=your-secret-key-here
-DATABASE_URL=sqlite:///db.sqlite3
-REDIS_URL=redis://localhost:6379/0
-
-# Optional variables with defaults
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
-
-# AI Configuration
-AI_MODEL_PATH=models/intent_classifier/
-EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
-MAX_CONTEXT_LENGTH=512
-
-# Performance
-CACHE_TIMEOUT=300
-DB_POOL_SIZE=5
-API_RATE_LIMIT=100/hour
-```
-
-### Health Checks & Smoke Tests
-```python
-# backend/civicnavigator/health.py
-from django.http import JsonResponse
-from django.views import View
-import json
-
-class HealthView(View):
-    def get(self, request):
-        # Database check
-        try:
-            from .models import KBDocument
-            KBDocument.objects.count()
-            db_status = "healthy"
-        except Exception as e:
-            db_status = f"error: {str(e)}"
-        
-        # AI model check
-        try:
-            from .ai.service import AIService
-            ai_service = AIService()
-            ai_status = ai_service.health_check()
-        except Exception as e:
-            ai_status = f"error: {str(e)}"
-        
-        return JsonResponse({
-            "status": "healthy" if db_status == "healthy" else "degraded",
-            "database": db_status,
-            "ai_service": ai_status,
-            "version": "1.0.0"
-        })
-
-# Smoke test script
-def run_smoke_tests():
-    tests = [
-        ("Chat Q&A", test_chat_functionality),
-        ("Incident Creation", test_incident_creation), 
-        ("Status Lookup", test_status_lookup)
-    ]
-    
-    for name, test_func in tests:
-        try:
-            test_func()
-            print(f"✅ {name}: PASSED")
-        except Exception as e:
-            print(f"❌ {name}: FAILED - {e}")
-```
-
-### KB Bundle & Data Setup
-```bash
-# data/kb_bundle/structure
-kb_bundle/
-├── documents/
-│   ├── garbage_collection.md
-│   ├── streetlight_maintenance.md
-│   ├── water_services.md
-│   └── ... (80-200 total documents)
-├── metadata.json
-└── ingest_instructions.md
-
-# Management command for KB ingestion
-# python manage.py ingest_kb data/kb_bundle/
-```
-
-## Success Metrics (Original Requirements)
-- ✅ **3 User Journeys**: Chat Q&A, Incident Reporting, Status Lookup (all working end-to-end)
-- ✅ **Staff Management**: Incident triage, status updates, KB content management
-- ✅ **AI Performance**: ≥70% correctness on 50-100 query test set with proper citations
-- ✅ **Performance**: Ask→Answer P50 ≤ 1.5s, P95 ≤ 3.5s (measured and optimized)
-- ✅ **Quality Evidence**: Unit tests, integration tests, E2E tests, accessibility compliance
-- ✅ **AI Deliverables**: Fine-tuned model weights, training logs, Model Card, health signals
-- ✅ **Deployment**: Single-command local setup, health checks, smoke tests
-- ✅ **Documentation**: Demo video ≤10 minutes, deployment instructions, API docs
-- ✅ **Collaboration**: GitHub issues/PRs, project board, code reviews, release notes
-
-## Risk Mitigation for 2-Developer Team
-
-### Critical Path Management
-**Day 1-2**: Parallel setup (no dependencies)
-**Day 3-4**: Frontend depends on backend APIs (daily sync required)
-**Day 5-6**: Independent testing and optimization
-**Day 7**: Joint integration and demo preparation
-
-### Fallback Plans
-- **AI Complexity**: If fine-tuning is complex, use pre-trained model + simple keyword classification
-- **Performance Issues**: Implement caching early, optimize database queries first
-- **Integration Problems**: Daily API contract validation, mock APIs for frontend development
-- **Time Constraints**: Prioritize core 3 journeys over advanced features
+## Success Metrics
+- Resident journeys work end-to-end (chat, report, check status)
+- Staff can manage incidents and KB content
+- AI answers ≥70% of test queries correctly with proper citations
+- Performance: Ask→Answer P50 ≤ 1.5s, P95 ≤ 3.5s
+- All automated tests pass
+- Accessibility checks pass on key flows
+- Complete documentation and demo video provided
 
 ---
 
