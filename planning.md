@@ -78,7 +78,7 @@ This plan outlines a step-by-step implementation approach for the CivicNavigator
 - Enhance chat UI for AI responses with citations
 - Add confidence indicators
 - Implement clarification question flow
-- Create staff interface for KB management
+- Create staff interface for KB management and Incident management
 - Add components for viewing/editing KB articles
 
 **Backend Developer:**
@@ -165,7 +165,7 @@ This plan outlines a step-by-step implementation approach for the CivicNavigator
 
 ### Frontend (Next.js)
 - **Framework**: Next.js 14 with TypeScript
-- **State Management**: Zustand for global state, React Context for authentication
+- **State Management**: Zustand for global state, React Context and react querry for api handling
 - **Styling**: Tailwind CSS with accessibility considerations
 - **Key Components**:
   - ChatInterface: Handles conversation flow
